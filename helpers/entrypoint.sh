@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 for ARGUMENT in "$@"
 do
@@ -18,7 +18,7 @@ done
 echo "=== Java parameters ==="
 echo "-Xms = -Xms$XMS"
 echo "-Xmx = -Xmx$XMX" 
-echo "================="
+echo "======================="
 
 
 java -Xms$XMS -Xmx$XMX -jar spigot.jar

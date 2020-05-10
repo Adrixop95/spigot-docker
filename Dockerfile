@@ -1,22 +1,27 @@
-FROM openjdk:11-jre-slim AS base
+FROM openjdk:8-jre-alpine AS base
 
 WORKDIR /spigot
 EXPOSE 25565
 
-FROM openjdk:11-jre-slim AS build
+FROM openjdk:8-jre-alpine AS build
 
-RUN apt-get update && \
-    apt-get install -y wget git
+RUN apk update && \
+    apk add wget git && \
+    rm -rf /var/cache/apk/*
 
 RUN wget https://hub.spigotmc.org/jenkins/job/BuildTools/lastSuccessfulBuild/artifact/target/BuildTools.jar
 RUN java -jar BuildTools.jar
 RUN cp spigot-*.jar spigot.jar
 
-FROM build AS final
+FROM base AS final
 WORKDIR /spigot
 COPY --from=build spigot.jar .
 COPY helpers/entrypoint.sh .
+COPY helpers/wait-for .
 
 RUN chmod +x /spigot/entrypoint.sh
+RUN chmod +x /spigot/wait-for
 
-CMD ["/spigot/entrypoint.sh"]
+RUN chmod +x /spigot/spigot.jar
+
+CMD /spigot/wait-for mysql:33060 -t 20 && /spigot/entrypoint.sh
