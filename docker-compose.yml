@@ -2,10 +2,7 @@ version: '3.7'
 
 services:
     spigot:
-        build:
-            context: .
-            dockerfile: Dockerfile
-        image: spigot
+        image: adrixop95/spigotserver
         container_name: spigot
         ports:
             - 25565:25565
