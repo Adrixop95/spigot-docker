@@ -1,0 +1,39 @@
+version: '3.7'
+
+services:
+    spigot:
+        build:
+            context: .
+            dockerfile: Dockerfile
+        image: spigot
+        container_name: spigot
+        ports:
+            - 25565:25565
+        environment: 
+            - XMS=500M
+            - XMX=1G
+        volumes: 
+            - ./configs/eula.txt:/spigot/eula.txt
+            - ./configs/server.properties:/spigot/server.properties
+            - ./plugins:/spigot/plugins
+        networks: 
+            - minecraft_spigot
+    
+    mysql:
+        image: mysql:8
+        container_name: mysql
+        environment: 
+            - MYSQL_DATABASE=spigot
+            - MYSQL_USER=spigotusr
+            - MYSQL_PASSWORD=supersecretpassword
+        volumes: 
+            - db_data:/var/lib/mysql
+        networks: 
+            - minecraft_spigot
+
+
+volumes: 
+    db_data: {}
+
+networks:
+    minecraft_spigot:
